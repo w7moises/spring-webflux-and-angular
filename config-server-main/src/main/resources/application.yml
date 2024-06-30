@@ -1,20 +1,19 @@
 server:
-  port: 8080
+  port: ${CONFIG_PORT:8080}
 
 spring:
   cloud:
     gateway:
       routes:
         - id: orderModule
-          uri: http://localhost:8050
+          uri: ${ORDER_SERVICE_URI:http://localhost:8050}
           predicates:
             - Path=/orders/**
         - id: userModule
-          uri: http://localhost:8070
+          uri: ${USER_SERVICE_URI:http://localhost:8070}
           predicates:
             - Path=/users/**
         - id: productModule
-          uri: http://localhost:8090
+          uri: ${PRODUCT_SERVICE_URI:http://localhost:8090}
           predicates:
             - Path=/products/**
-

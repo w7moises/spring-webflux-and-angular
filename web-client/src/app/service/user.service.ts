@@ -4,12 +4,13 @@ import { Observable } from 'rxjs';
 import { UserLogin } from '../models/user-login';
 import { Route, Router } from '@angular/router';
 import { CreateUserDto } from '../models/create/create-user-dto';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  private baseUrl = 'http://localhost:8080/users';
+  private baseUrl = `${environment.apiUrl}/users`;
 
   constructor(private http: HttpClient, private router: Router) { }
 

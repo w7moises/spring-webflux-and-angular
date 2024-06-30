@@ -27,7 +27,7 @@
       </div>
 
       <div class="button-group" style="display: flex; justify-content: space-between;">
-        <button type="submit" class="btn btn-success">Guardar</button>
+        <button type="submit" class="btn btn-success" [disabled]="this.selectedProductIds.length==0">Guardar</button>
         <button type="button" class="btn btn-info ml-1" (click)="gotoList()">Regresar</button>
       </div>
     </form>

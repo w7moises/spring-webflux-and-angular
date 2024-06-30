@@ -60,7 +60,7 @@ export class OrderListComponent implements OnInit {
         duration: 3000
       });
       setTimeout(() => {
-        this.router.navigate(['/orders']);
+        this.router.navigate(['/order']);
       }, 2000);
     });
   }

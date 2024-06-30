@@ -72,4 +72,26 @@ public class ProductServiceTest {
                 .expectBodyList(ProductDto.class)
                 .isEqualTo(List.of(product));
     }
+
+    @Test
+    @DisplayName("Test Subtract Stock Product")
+    public void testSubtractStockProduct() {
+        when(productService.subtractStockProduct(id)).thenReturn(Mono.just(product));
+        webClient.put().uri("/products/restar-stock/{id}", id)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ProductDto.class)
+                .isEqualTo(product);
+    }
+
+    @Test
+    @DisplayName("Test Add Stock Product")
+    public void testAddStockProduct() {
+        when(productService.addStockProduct(id)).thenReturn(Mono.just(product));
+        webClient.put().uri("/products/sumar-stock/{id}", id)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ProductDto.class)
+                .isEqualTo(product);
+    }
 }

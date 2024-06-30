@@ -4,7 +4,6 @@ import com.example.usermicroservice.config.security.JWTUtil;
 import com.example.usermicroservice.config.security.PBKDF2Encoder;
 import com.example.usermicroservice.dto.UserDto;
 import com.example.usermicroservice.entity.Role;
-import com.example.usermicroservice.entity.UserLogin;
 import com.example.usermicroservice.entity.authentication.AuthRequest;
 import com.example.usermicroservice.entity.authentication.AuthResponse;
 import com.example.usermicroservice.service.UserService;
@@ -42,10 +41,16 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public Mono<ResponseEntity<AuthResponse>> login(@RequestBody AuthRequest ar) {
+    public Mono<ResponseEntity<?>> login(@RequestBody AuthRequest ar) {
         return userService.findByUsername(ar.getUsername())
-                .filter(userDetails -> passwordEncoder.encode(ar.getPassword()).equals(userDetails.getPassword()))
-                .map(userDetails -> ResponseEntity.ok(new AuthResponse(jwtUtil.generateToken(userDetails), userDetails.getId())))
-                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()));
+                .flatMap(userDetails -> {
+                    if (passwordEncoder.matches(ar.getPassword(), userDetails.getPassword())) {
+                        String token = jwtUtil.generateToken(userDetails);
+                        return Mono.just(ResponseEntity.ok(new AuthResponse(token, userDetails.getId())));
+                    } else {
+                        return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+                    }
+                })
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND).build()));
     }
 }

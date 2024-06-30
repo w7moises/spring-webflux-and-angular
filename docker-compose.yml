@@ -1,0 +1,107 @@
+version: "3.8"
+services:
+  config-server:
+    image: config-server
+    build: ./config-server-main
+    ports:
+      - "9080:9080"
+    networks:
+      - microservices-net
+    environment:
+      CONFIG_PORT: 9080
+      ORDER_SERVICE_URI: http://host.docker.internal:8050
+      USER_SERVICE_URI: http://host.docker.internal:8070
+      PRODUCT_SERVICE_URI: http://host.docker.internal:8090
+
+  user-service:
+    image: user-microservice
+    build: ./user-microservice
+    ports:
+      - "8070:8070"
+    networks:
+      - microservices-net
+    depends_on:
+      - user-db
+    environment:
+      USER_SERVER_PORT: 8070
+      R2DBC_URL: r2dbc:postgresql://user-db:5432/userDb
+      JWT_SECRET: mysecret
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: on-failure
+
+  product-service:
+    image: product-microservice
+    build: ./product-microservice
+    ports:
+      - "8090:8090"
+    networks:
+      - microservices-net
+    depends_on:
+      - product-db
+    environment:
+      PRODUCT_SERVER_PORT: 8090
+      R2DBC_URL: r2dbc:postgresql://product-db:5432/productDb
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: on-failure
+
+  order-service:
+    image: order-microservice
+    build: ./order-microservice
+    ports:
+      - "8050:8050"
+    networks:
+      - microservices-net
+    depends_on:
+      - order-mongo
+    environment:
+      ORDER_SERVER_PORT: 8050
+      MONGODB_URI: mongodb://order-mongo:27017/orderDb
+      PRODUCT_URL: http://host.docker.internal:8090
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: on-failure
+
+  user-db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: userDb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "#Devilmaycry5"
+    ports:
+      - "5432:5432"
+    networks:
+      - microservices-net
+
+  product-db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: productDb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "#Devilmaycry5"
+    ports:
+      - "5433:5432"
+    networks:
+      - microservices-net
+
+  order-mongo:
+    image: mongo:4.2
+    ports:
+      - "27017:27017"
+    networks:
+      - microservices-net
+
+  angular-app:
+    image: angular-app
+    build:
+      context: ./web-client
+      dockerfile: Dockerfile
+    ports:
+      - "4200:80"
+    networks:
+      - microservices-net
+
+networks:
+  microservices-net:
+    driver: bridge

@@ -30,6 +30,7 @@ export class LoginComponent implements OnInit {
       lastname: ['', Validators.required]
     });
   }
+  
   get loginControls() {
     return this.loginForm.controls;
   }
@@ -55,6 +56,16 @@ export class LoginComponent implements OnInit {
     }
     this.userService.login(this.loginForm.value).subscribe(data => {
       this.userService.handleToken(data['token'], data['id']);
+    }, (error: HttpErrorResponse) => {
+      if (error.status === 404) {
+        this.snackBar.open('Usuario no existente', 'Close', {
+          duration: 2000,
+        });
+      } else {
+        this.snackBar.open('Usuario o Contraseña incorrecta', 'Close', {
+          duration: 2000,
+        });
+      }
     });
   }
 
