@@ -1,0 +1,32 @@
+<h2>Detalles</h2>
+
+<hr />
+
+<div *ngIf="order">
+  <div>
+    <label><b>Id del orden: </b></label> {{ order.id }}
+  </div>
+  <div>
+    <label><b>Productos:</b></label>
+    <ul class="list-group">
+      <li class="list-group-item" *ngFor="let product of products">
+        <div>
+          <b>{{ product.name }}</b>
+        </div>
+        <div>
+          {{ product.description }}
+        </div>
+        <div>
+          <b>Precio:</b> S/. {{product.price }}
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div>
+    <label><b>Total: </b></label> {{ order.total | number:'1.2-2'}}
+  </div>
+</div>
+
+<br>
+<br>
+<button (click)="list()" class="btn btn-primary">Regresar</button>

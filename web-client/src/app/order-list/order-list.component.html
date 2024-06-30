@@ -1,0 +1,49 @@
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <div class="row">
+      <div class="col-md-6">
+        <h2>Lista de órdenes</h2>
+      </div>
+      <div class="col-md-6 text-right">
+        <button (click)="createOrder()" class="btn btn-success">Agregar Orden</button>
+      </div>
+    </div>
+  </div>
+  <div class="panel-body">
+    <div class="table-responsive">
+      <table class="table table-striped" *ngIf="(orders)?.length > 0; else noData">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Usuario</th>
+            <th>Productos</th>
+            <th>Total</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let order of orders">
+            <td>{{ order.id }}</td>
+            <td>{{ user?.firstname }} {{ user?.lastname }}</td>
+            <td>
+              <span *ngFor="let product of order.products; let last = last" style="margin-top: 10px;">
+                {{ product.name }}{{ !last ? ', ' : '' }}
+              </span>
+            </td>
+            <td>{{ order.total | number:'1.2-2' }}</td>
+            <td>
+              <div class="btn-group" role="group">
+                <button (click)="deleteOrder(order.id)" class="btn btn-danger btn-sm">Eliminar</button>
+                <button (click)="updateOrder(order.id)" class="btn btn-info btn-sm ml-1">Actualizar</button>
+                <button (click)="orderDetails(order.id)" class="btn btn-info btn-sm ml-1">Detalles</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <ng-template #noData>
+        <div class="alert alert-warning">No hay datos disponibles.</div>
+      </ng-template>
+    </div>
+  </div>
+</div>

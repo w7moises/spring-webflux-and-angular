@@ -1,0 +1,35 @@
+<h3>Actualizar Orden</h3>
+<div style="display: flex; justify-content: center; align-items: center; height: 50vh;">
+  <div style="width: 400px;">
+    <form (ngSubmit)="onSubmit()" [formGroup]="orderForm">
+      <div class="form-group">
+        <label for="userId">Usuario</label>
+        <input type="text" class="form-control" id="userId" formControlName="userId" readonly
+          [value]="user?.firstname +' '+ user?.lastname" required>
+      </div>
+
+      <div class="form-group">
+        <label>Productos</label>
+        <div style="max-height: 200px; overflow-y: auto;">
+          <div *ngFor="let product of products; let i = index">
+            <label class="checkbox-label">
+              <input type="checkbox" [value]="product.id" [checked]="isSelected(product.id)"
+                (change)="onCheckboxChange(product.id, $event.target.checked)">
+              {{ product.name }} - {{ product.price }}
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="total">Total</label>
+        <input type="number" class="form-control" id="total" [value]="formattedTotal()" readonly required>
+      </div>
+
+      <div class="button-group" style="display: flex; justify-content: space-between;">
+        <button type="submit" class="btn btn-success">Guardar</button>
+        <button type="button" class="btn btn-info ml-1" (click)="gotoList()">Regresar</button>
+      </div>
+    </form>
+  </div>
+</div>
