@@ -23,5 +23,5 @@ Este repositorio contiene una aplicación Angular integrada con un backend Sprin
 
 2. **Eliminar imagenes**
    ```bash
-   docker-compose up --build
+   docker-compose down
 
